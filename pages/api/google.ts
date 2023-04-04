@@ -13,7 +13,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
       req.body as GoogleBody;
 
     const userMessage = messages[messages.length - 1];
-
+    const startTime = Date.now();
     const googleRes = await fetch(
       `https://customsearch.googleapis.com/customsearch/v1?key=${
         googleAPIKey ? googleAPIKey : process.env.GOOGLE_API_KEY
@@ -21,6 +21,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
         googleCSEId ? googleCSEId : process.env.GOOGLE_CSE_ID
       }&q=${userMessage.content.trim()}&num=5`,
     );
+
 
     const googleData = await googleRes.json();
 
@@ -37,7 +38,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
       sources.map(async (source) => {
         try {
           const timeoutPromise = new Promise((_, reject) =>
-            setTimeout(() => reject(new Error('Request timed out')), 5000),
+            setTimeout(() => reject(new Error('Request timed out')), 15000),
           );
 
           const res = (await Promise.race([
